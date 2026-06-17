@@ -1,0 +1,9 @@
+__pycache__
+.env
+database01.sql
+dependencias.sh.sql
+dependencias.sh
+insert-select.sql
+script_bd.sql
+script_table.sql
+.venv
