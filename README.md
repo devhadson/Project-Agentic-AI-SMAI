@@ -14,8 +14,10 @@
 - Docentee: [Miguel Angel Cotrina Espinoza](https://www.linkedin.com/in/mcotrina/)
 - [Instituto de Datos e Inteligencia Artificial - URP](https://www.linkedin.com/company/idia-urp/)
 
+
 > [!Important]  
 > Este proyecto es la continuidad del [Proyecto integrador M2](https://github.com/devhadson/Project-Agentic-AI-Virtual-Medical-Assistant)
+
 ---
 
 ### 1. Objetivo General
@@ -116,8 +118,6 @@ graph TD
     CH1 & CH2 & CH3 --> EMB
     EMB --> FAISS
 
-    style FAISS fill:#FF1717,stroke:#333
-    style PDF fill:#4733FF,stroke:#333
 
 ```
 
@@ -167,10 +167,10 @@ Este pipeline gestiona la interacción entre el usuario y la base de conocimient
 1. **Entrada del Usuario:** A través de la interfaz **Streamlit**, el usuario ingresa una consulta natural (ej. "Analiza la última HC del paciente HC-12345").
 2. **Orquestación con LangChain:** El agente recibe el mensaje y, mediante el LLM (GPT-4o), analiza la intención. Si detecta una solicitud de información clínica, activa automáticamente la función `herramienta_busqueda_rag` definida en `tools.py`.
 3. **Consulta Híbrida (Tools Layer):**
-* **SQL (Validación):** El sistema consulta `PostgreSQL` para verificar que el `hc_id` exista y para recuperar el `index_id` (la ruta al índice vectorial).
-* **Vectorial (FAISS):** Una vez validado, carga el índice de `FAISS` local y realiza una búsqueda de similitud semántica.
-4. **Síntesis y Generación:** Los fragmentos de texto recuperados se inyectan como *contexto* en el prompt del LLM (`gpt-4o`). El modelo utiliza este contexto enriquecido para redactar una respuesta coherente y precisa.
-5. **Respuesta Final:** El sistema presenta al usuario la respuesta en la interfaz de usuario, manteniendo el historial del chat para consultas de seguimiento.
+4. **SQL (Validación):** El sistema consulta `PostgreSQL` para verificar que el `hc_id` exista y para recuperar el `index_id` (la ruta al índice vectorial).
+5. **Vectorial (FAISS):** Una vez validado, carga el índice de `FAISS` local y realiza una búsqueda de similitud semántica.
+6. **Síntesis y Generación:** Los fragmentos de texto recuperados se inyectan como *contexto* en el prompt del LLM (`gpt-4o`). El modelo utiliza este contexto enriquecido para redactar una respuesta coherente y precisa.
+7. **Respuesta Final:** El sistema presenta al usuario la respuesta en la interfaz de usuario, manteniendo el historial del chat para consultas de seguimiento.
 
 **Descripción de los Componentes en la Ejecución**
 
@@ -189,7 +189,7 @@ El siguiente diagrama detalla cómo interactúan los componentes en tiempo real 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant User as Usuario
+    actor User as Usuario
     participant UI as Streamlit
     participant Agent as Agente (LangChain)
     participant Tools as Herramientas (RAG/DB)
@@ -269,12 +269,12 @@ graph TD
     T -->|Metadata/Validación| DB
     T -->|Búsqueda Semántica| VDB
 
-    style FE fill:#3B6CD1,stroke:#757575,stroke-width:2px
+    style FE fill:#3B6CD1,stroke:#757575,stroke-width:2px,color:#fff
     style ORC fill:#D17C3B,stroke:#757575,stroke-width:2px
     style L fill:#00A63B,stroke:#757575,stroke-width:2px
     style T fill:#00A63B,stroke:#757575,stroke-width:2px
     style DB fill:#3B6CD1,stroke:#757575,stroke-width:2px
-    style VDB fill:#3B6CD1,stroke:#757575,stroke-width:2px
+    style VDB fill:#3B6CD1,stroke:#757575,stroke-width:2px,color:#fff
 
 ```
 
