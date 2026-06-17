@@ -4,40 +4,45 @@
 *Documentación elaborado por [Hadson Paredes](https://www.linkedin.com/in/hadson-paredes/) - 2026*
 - Repositorio: [Project-Agentic-AI-SMAI](https://github.com/devhadson/Project-Agentic-AI-SMAI)
 - Elaboración: Sistema Médico de Asistencia Inteligente (SMAI)
-  - Plataforma diseñada para la gestión clínica, triaje automatizado y consulta de historias clínicas mediante Inteligencia Artificial y RAG
+  - Plataforma inteligente diseñada para la gestión administrativa de pacientes con diabetes.
   - Arquitectura: Híbrida (Determinista y Agéntica)
   - Modelo Fundacional IA: OpenAI (`GPT-4o`)
   - Contexto, Prompting y Orquestación de Agentes: LangChain Framework
   - Frontend: Streamlit Framework 
-  - Base de datos: Persistente `PostgreSQL` y Vectorial `FAISS`
+  - Base de datos: Transaccional `PostgreSQL` y Vectorial `FAISS`
 - Especialización: IA Engineer y Arquitetura de Sistemas Generativos 
-- Docentee: [Miguel Angel Cotrina Espinoza](https://www.linkedin.com/in/mcotrina/)
+- Docente: [Miguel Angel Cotrina Espinoza](https://www.linkedin.com/in/mcotrina/)
 - [Instituto de Datos e Inteligencia Artificial - URP](https://www.linkedin.com/company/idia-urp/)
 
+---
 
 > [!Important]  
-> Este proyecto es la continuidad del [Proyecto integrador M2](https://github.com/devhadson/Project-Agentic-AI-Virtual-Medical-Assistant)
+> Este proyecto es la continuidad del [Proyecto integrador M2](https://github.com/devhadson/Project-Agentic-AI-Virtual-Medical-Assistant), donde se detalla acerca del desarrollo del Agente Inteligente con Memoria y Arquitectura Justificada.
 
 ---
 
 ### 1. Objetivo General
 
-El objetivo es automatizar el triaje y la gestión administrativa de pacientes con diabetes, utilizando modelos de lenguaje (LLMs) para evaluar niveles de glucosa, agendar citas y consultar historiales clínicos de manera segura, eficiente y centrada en el paciente.
+El objetivo es automatizar la gestión administrativa de pacientes con diabetes, utilizando modelos de lenguaje (LLMs) para evaluar niveles de glucosa, agendar citas y consultar historiales clínicos de manera segura, eficiente y centrada en el paciente.
 
 ---
 
 ### 2. Alcance del Proyecto
 
-El sistema gestiona el ciclo de vida del paciente desde la detección de glucosa hasta la asignación de citas, integrando persistencia relacional para transacciones y persistencia vectorial para el conocimiento médico no estructurado. El sistema inteligente abarca:
+El sistema gestiona el ciclo de vida del paciente endocrino (específicamente pacientes con diabetes) desde la lectura de glucosa hasta la asignación de citas, integrando persistencia relacional a las transacciones y almacenamiento vectorial para la consulta de historias clínicas (HC) mediante un modelo de sistema de **Generación Aumentada por Recuperación (RAG)**. 
 
-* **Gestión de acceso:** Control basado en roles (RBAC).
-* **Triaje clínico:** Evaluación automatizada de riesgos según niveles de glucosa.
-* **Agendamiento:** Programación inteligente de citas con validación de reglas de negocio.
-* **Gestión de conocimiento:** Implementación de RAG para consulta de expedientes médicos (PDFs).
+Principales carácteristicas de Sistema Médico de Asistencia Inteligente (SMAI).
+
+![Representación de Arquitectura](docs/imgs/01.1.solution-agent-ia-SMAI.png)
+
+1. **Gestión de acceso:** Control basado en roles (RBAC).
+2. **Triaje clínico:** Evaluación automatizada de riesgos según niveles de glucosa.
+3. **Agendamiento:** Programación inteligente de citas con validación de reglas de negocio.
+4. **Gestión de conocimiento:** Implementación de RAG para consulta de expedientes médicos (HC).
 
 #### 2.1. Persistencia de Datos
 
-* **PostgreSQL:** Almacena la estructura relacional (usuarios, citas, médicos) y metadatos del sistema RAG.
+* **PostgreSQL:** Almacena la estructura relacional (usuarios, dataset_paciente, citas, médicos) y metadatos (index_rag_pdf) del sistema RAG.
 * **FAISS:** Proporciona persistencia vectorial local para la recuperación de información semántica (archivos cargados).
 
 #### 2.2. Diagrama de Relación de Entidades (ERD)
@@ -55,22 +60,22 @@ graph TD
     User -->|Registra| Cita
     Medico -->|Atiende| Cita
     Dataset -->|Asocia| Cita
-    IndexRAG -.->|Vincula vector local| FAISS[FAISS Vector Store]
+    Dataset -.-> IndexRAG -.->|Vincula vector local| FAISS[(FAISS Vector Store)]
 
 ```
 
-* **Descripción de Tablas:**
-* `usuario`: Gestión de autenticación y roles.
-* `citas`: Registro central de triaje, urgencias y citas programadas.
-* `medico`: Directorio de profesionales y sus especialidades.
-* `dataset_paciente`: Datos crudos de salud (glucosa) para triaje.
-* `index_rag_pdf`: Mapeo de archivos físicos con ID clínico (`hc_id`) vs. su ID vectorial (`index_id`) en FAISS.
+**Descripción de Tablas:**
+1. `usuario`: Gestión de autenticación y roles.
+2. `citas`: Registro central de triaje, urgencias y citas programadas.
+3. `medico`: Directorio de profesionales y sus especialidades.
+4. `dataset_paciente`: Datos crudos de salud (glucosa) para triaje.
+5. `index_rag_pdf`: Mapeo de archivos físicos con ID clínico (`hc_id`) vs. su ID vectorial (`index_id`) en FAISS.
 
 ---
 
 ### 3. Problema / Dolor del Negocio
 
-El sistema en primer instancia resuelve la **saturación operativa** y el **tiempo de respuesta** en la atención a pacientes con condiciones crónicas (diabetes). Asimismo, elimina la carga administrativa manual y el riesgo humano en la categorización inicial de urgencias médicas. Además, la solución inteligente responde a las siguientes preguntas planteadas:
+El sistema en primer instancia resuelve la **saturación operativa** mediante los datos previamente ingresados y el **tiempo de respuesta** en la atención a pacientes con condiciones crónicas (diabetes). Asimismo, elimina la carga administrativa manual y el riesgo humano en la categorización inicial de urgencias médicas. Además, la solución inteligente responde a las siguientes preguntas planteadas:
 
 * **A: ¿Qué problema tiene la empresa o usuario?** Retrasos peligrosos en el triaje de glucosa y sobrecarga de servicios médicos.
 * **B: Qué proceso manual, lento o repetitivo se busca mejorar** Clasificación manual y repetitiva propensa a errores humanos.
@@ -102,7 +107,7 @@ graph TD
     subgraph Splitter [Segmentación Inteligente]
         REC[RecursiveCharacterTextSplitter]
         CH1[Chunk 1: Datos Personales]
-        CH2[Chunk 2: Análisis Glucosa]
+        CH2[Chunk 2: Búsqueda en HC<br>control metabolico, observaciones<br>relevantes, plan de alimentacion ]
         CH3[Chunk 3: Recomendaciones]
     end
 
@@ -127,7 +132,7 @@ La base de conocimiento se estructura bajo los siguientes pilares:
 
 1. **Contexto Atómico (Chunks):** Al utilizar un `chunk_size` de 500 tokens con un `overlap` de 50, garantizamos que el modelo de lenguaje (`gpt-4o`) no pierda el hilo conductor entre fragmentos. Esto es vital para el seguimiento de condiciones crónicas como la diabetes, donde un valor de glucosa debe estar vinculado a la fecha y tratamiento específico.
 2. **Identificación única (Metadata):** A diferencia de una base de conocimiento convencional, cada índice en `FAISS` está ligado a un `hc_id` en `PostgreSQL`. Esto permite que la "Base de Conocimiento" sea **dinámica y segura**, cargando únicamente el índice del paciente que se está consultando.
-3. **Vectorización semántica:** Al usar `OpenAIEmbeddings`, la base de conocimiento no solo busca por palabras clave (ej. "glucosa"), sino por intención clínica (ej. "hiperglucemia", "valores elevados", "descompensación"), permitiendo que el agente médico entienda el estado de salud aunque el término técnico varíe.
+3. **Vectorización semántica:** Al usar `OpenAIEmbeddings`, la base de conocimiento no solo busca por palabras clave (ej. "control metabolico"), sino por intención clínica (ej. "observaciones", "valores elevados", "plan de alimentación"), permitiendo que el agente médico entienda el estado de salud aunque el término técnico varíe.
 
 Esta arquitectura transforma archivos PDF estáticos en una **base de conocimiento inteligente** capaz de alimentar al LLM con la precisión necesaria para la toma de decisiones clínicas.
 
@@ -273,7 +278,7 @@ graph TD
     style ORC fill:#D17C3B,stroke:#757575,stroke-width:2px
     style L fill:#00A63B,stroke:#757575,stroke-width:2px
     style T fill:#00A63B,stroke:#757575,stroke-width:2px
-    style DB fill:#3B6CD1,stroke:#757575,stroke-width:2px
+    style DB fill:#3B6CD1,stroke:#757575,stroke-width:2px,color:#fff
     style VDB fill:#3B6CD1,stroke:#757575,stroke-width:2px,color:#fff
 
 ```
